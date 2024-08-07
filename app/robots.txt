@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /public/
+Disallow: /tmp/
+Disallow: /user.html
+Disallow: /privacy.html
+Disallow: /cookie.html
+Disallow: /dpa.html
+
+Sitemap: https://www.chatbond.co/sitemap.xml
+

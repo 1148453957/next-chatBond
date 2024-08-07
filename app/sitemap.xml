@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+      <loc>https://www.chatbond.co</loc>
+      <lastmod>2024-07-05</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1.0</priority>
+    </url>
+    <url>
+      <loc>https://www.chatbond.co/center</loc>
+      <lastmod>2024-07-01</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+    </url>
+    <url>
+      <loc>https://www.chatbond.co/pricing</loc>
+      <lastmod>2024-07-01</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.5</priority>
+    </url>
+    <url>
+      <loc>https://www.chatbond.co/login</loc>
+      <lastmod>2024-07-01</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+    </url>
+    <url>
+      <loc>https://www.chatbond.co/account/info</loc>
+      <lastmod>2024-07-08</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.5</priority>
+    </url>
+    <url>
+      <loc>https://www.chatbond.co/blog</loc>
+      <lastmod>2024-07-17</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1.0</priority>
+    </url>
+    <url>
+      <loc>https://www.chatbond.co/changelog</loc>
+      <lastmod>2024-07-17</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1.0</priority>
+    </url>
+    <!-- 更多URL -->
+  </urlset>

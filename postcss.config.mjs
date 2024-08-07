@@ -2,6 +2,10 @@
 const config = {
   plugins: {
     tailwindcss: {},
+    '@unocss/postcss': {
+      // Optional
+      content: ['*.{html,js,ts,jsx,tsx}'],
+    },
   },
 };
 
