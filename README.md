@@ -1,3 +1,12 @@
+
+- 1. 翻译成中文，然后页面报错，html的lang变成了zh-cn，alt的翻译也报错了
+
+
+
+
+
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

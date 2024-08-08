@@ -9,13 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.4.0",
     "@ant-design/nextjs-registry": "^1.0.0",
+    "@types/js-cookie": "^3.0.6",
+    "antd": "^5.20.0",
+    "js-cookie": "^3.0.5",
+    "less-loader": "^12.2.0",
+    "lottie-web": "^5.12.2",
+    "md5": "^2.3.0",
     "next": "14.2.5",
+    "next-auth": "^4.24.7",
+    "next-plugin-antd-less": "^1.8.0",
+    "qs": "^6.13.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "thinkingdata-browser": "^2.0.3"
   },
   "devDependencies": {
+    "@types/md5": "^2.3.5",
     "@types/node": "^20",
+    "@types/qs": "^6.9.15",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@unocss/postcss": "^0.61.9",

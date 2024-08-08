@@ -1,10 +1,14 @@
-import "./globals.css";
+import "./globals.scss";
+
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import Script from "next/script";
 import { Metadata } from "next";
 import type { Viewport } from "next";
-import { Suspense } from 'react'
-import  Header  from "@/components/header";
+import Header from "@/components/header";
+import AppInit from "./app";
+import { ConfigProvider } from "antd";
+import dayjs from 'dayjs'
+dayjs.locale('en')
 
 export const metadata: Metadata = {
   title: "Chatbond - AI Chatbot Builder",
@@ -82,12 +86,20 @@ export default function RootLayout({
 
       <body>
         <AntdRegistry>
-          <div id="app">
-            
-            <Header />
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "#0AC655",
+              },
+            }}
+          >
+            <div id="app">
+              <AppInit />
+              <Header />
 
-            <div>{children}</div> 
-          </div>
+              <div>{children}</div>
+            </div>
+          </ConfigProvider>
         </AntdRegistry>
         <Script
           src="/iframe.min.js"

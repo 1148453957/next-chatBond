@@ -1,4 +1,37 @@
+"use client";
+import './home.scss';
+
+import { sendTA } from "@/lib/js/TA";
+import Cookies from "js-cookie";
+import Lottie from "@/components/Lottie";
+import Link from "next/link";
+
 export default function Home() {
+  const sendTAFn = (style: string) => {
+    sendTA("XWEB_CLICK", {
+      name: "home_page",
+      style,
+      container: Cookies.get("userId"),
+    });
+  };
+  const stepList = [
+    {
+      title: "Import data",
+      desc: "Connect your data sources, upload files, or add a website for crawling, and Chatbond will use all of that data to train your chatbot.",
+    },
+    {
+      title: "Customize robot",
+      desc: "Make your chatbot look like it's part of your website with custom colors and logos and make it match your brand's personality with custom instructions",
+    },
+    {
+      title: "Embed website",
+      desc: "Add a chat widget to any website with a simple embed code.",
+    },
+    {
+      title: "Integrate with tools",
+      desc: "Connect your chatbot to your favorite tools like Slack, Zapier, and more.",
+    },
+  ];
   return (
     <>
       <div className="mx-auto text-#040608 font-[Inter] relative">
@@ -24,11 +57,14 @@ export default function Home() {
             Engagement increased by 270%, conversion rates improved by 240%, and
             CPA reduced by 70%.
           </p>
-          {/* <RouterLink to="/center">
-      <div className="w-328px h-16 mt-10 text-center mx-auto" @click="sendTAFn('try')">
-        <Lottie key="top" />
-      </div>
-    </RouterLink> */}
+          <Link href="/center">
+            <div
+              className="w-328px h-16 mt-10 text-center mx-auto"
+              onClick={() => sendTAFn("try for free")}
+            >
+              <Lottie />
+            </div>
+          </Link>
           <div className="tip text-12px font-400 mx-auto fcc mt-4 font-[Inter] text-#818283">
             <span className="mr-4 flex">
               <img
@@ -46,19 +82,24 @@ export default function Home() {
             Get started with Chatbond
           </p>
           <div className="flex flex-col items-start justify-center gap-16 mt-10">
-            {/* <ul className="grid grid-cols-1 flex-wrap items-start justify-center gap-10 lg:grid-cols-4">
-        <li
-          className="relative flex flex-col overflow-hidden rounded-md transition-all duration-500 ease-in-out hover:shadow-md border-1 border-#040608 rounded-4"
-          v-for="(item, index) in stepList"
-          :key="index"
-        >
-          <p className="linearBg text-#fff text-center py-3 fw-500">Step{{ index + 1 }}</p>
-          <div className="xl:h-[12rem] h-[8rem] md:h-[18rem]">
-            <h4 className="text-5 fw-700 px-4 mt-3">{{ item.title }}</h4>
-            <p className="text-#686A6B fw-500 px-4 text-14px lh-5">{{ item.desc }}</p>
-          </div>
-        </li>
-      </ul> */}
+            <ul className="grid grid-cols-1 flex-wrap items-start justify-center gap-10 lg:grid-cols-4">
+              {stepList.map((item, index) => (
+                <li
+                  className="relative flex flex-col overflow-hidden rounded-md transition-all duration-500 ease-in-out hover:shadow-md border-1 border-#040608 rounded-4"
+                  key={index}
+                >
+                  <p className="linearBg text-#fff text-center py-3 fw-500">
+                    Step{index + 1}
+                  </p>
+                  <div className="xl:h-[12rem] h-[8rem] md:h-[18rem]">
+                    <h4 className="text-5 fw-700 px-4 mt-3">{item.title}</h4>
+                    <p className="text-#686A6B fw-500 px-4 text-14px lh-5">
+                      {item.desc}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
         <section className="py-10 md:py-20 px-6 flex flex-items-center w-full max-w-300 mx-auto flex-col lg:flex-row">
@@ -335,11 +376,14 @@ export default function Home() {
             Resolve up to 80% of customer questions with AI
           </p>
 
-          {/*  <RouterLink to="/center">
-      <div className="w-328px h-16 mt-10 text-center mx-auto mb-18" @click="sendTAFn('try')">
-        <Lottie key="top" />
-      </div>
-    </RouterLink> */}
+          <Link href="/center">
+            <div
+              className="w-328px h-16 mt-10 text-center mx-auto mb-18"
+              onClick={() => sendTAFn("try for free")}
+            >
+              <Lottie />
+            </div>
+          </Link>
         </section>
 
         <section className="md:px-14vw px-6 bg-#1D1F21 flex justify-center items-center">
