@@ -101,11 +101,11 @@ export default function RootLayout({
             </div>
           </ConfigProvider>
         </AntdRegistry>
-        <Script
+      {/*   <Script
           src="/iframe.min.js"
           data-chatbotId="super"
           strategy="lazyOnload"
-        />
+        /> */}
       </body>
     </html>
   );

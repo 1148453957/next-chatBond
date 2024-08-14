@@ -1,4 +1,9 @@
+import { Spin } from 'antd';
 export default function Loading() {
-    // You can add any UI inside Loading, including a Skeleton.
-    return (<>我正在loading</>)
+   return (
+   
+   <div className='w-full h-full fcc'>
+    <Spin  />
+   </div>
+   )
   }

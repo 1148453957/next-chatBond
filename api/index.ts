@@ -1,5 +1,3 @@
-"use client";
-
 /**谷歌登录所需id */
 export const googleId =
   process.env.NEXT_PUBLIC_RUN_ENV == "prod"
@@ -47,61 +45,3 @@ export const base_info = {
   packageName,
   appId,
 };
-
-import axios from "axios";
-import { message } from "antd";
-import { redirect } from "next/navigation";
-
-export const http = axios.create({
-  headers: {
-    appId,
-    packageName,
-  },
-  withCredentials: true,
-});
-http.interceptors.request.use((config) => {
-  if (config.withoutBaseInfo) {
-    // paypal支付的时候，不能额外传参
-  } else {
-    const { data = {} } = config;
-    config.data = {
-      appId,
-      baseInfo: base_info,
-      ...data,
-    };
-  }
-
-  return config;
-});
-http.interceptors.response.use(
-  function (response: any) {
-    const {
-      data: { code },
-    } = response;
-    if (+code === 44014 || +code === 44004 || +code === 601) {
-      /*  const gd = useGlobalData()
-      gd.logOut() */
-
-      message.error("Login expired, please login first");
-
-      // redirect('/login'+encodeURIComponent(router.currentRoute.fullPath))
-      redirect("/login");
-      return Promise.reject("Login expired");
-    }
-    if (response?.config?.url.includes("/export")) {
-      if (response.data) return response.data;
-      else message.error("Download failed");
-    }
-
-    if ([1].includes(code)) {
-      return Promise.resolve(response.data);
-    } else {
-      message.error(response?.data?.message);
-      return Promise.reject(response?.data?.message);
-    }
-  },
-  function (error) {
-    message.error(error.message);
-    return Promise.reject(error.message || error);
-  }
-);

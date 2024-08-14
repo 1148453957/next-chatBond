@@ -1,4 +1,4 @@
-import { http } from './index'
+import { http } from './bot'
 const botDomain = process.env.NEXT_PUBLIC_API_HOST
 const iapDomain = process.env.NEXT_PUBLIC_PAY_HOST
 

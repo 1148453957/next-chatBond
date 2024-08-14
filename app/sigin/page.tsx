@@ -1,17 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useBoolean } from "react-use";
+import { useInterval, useBoolean } from "react-use";
 import { authenticate } from "./action";
 import { Form, Input, Button } from "antd";
+import { useRouter, usePathname } from "next/navigation";
 import { sendTA } from "@/lib/js/TA";
 import Cookies from "js-cookie";
-import Link from "next/link";
 import { message } from "antd";
-import { emailLogin } from "@/api/login";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  //console.log('----------',router,pathname);
+
   const [scroll, setScroll] = useState(true);
-  const [messageApi, contextHolder] = message.useMessage();
+
   const updateWindowHeight = () => {
     setScroll(window.innerHeight > 750);
   };
@@ -34,54 +37,80 @@ export default function LoginPage() {
     agree: false,
   });
 
+  const codeEnter = () => {
+    console.log("Enter key pressed");
+  };
+
   const [loginLoading, setLoginLoading] = useState(false);
+
+  const [isRegister, setIsRegister] = useState(false);
 
   const [form] = Form.useForm();
   const emailValue = Form.useWatch("email", form);
   const passwordValue = Form.useWatch("password", form);
   const shortValue = Form.useWatch("short", form);
-  const onFinish = async (values: any) => {
+
+  const onFinish = (values: any) => {
     // 密码框敲击回车的时候，也会自动触发
     console.log("Success:", values);
-    sendTA("XWEB_CLICK", {
-      name: "login",
-      style: "sign_in",
-      container: Cookies.get("userId"),
-    });
 
     if (!values.email) {
-      messageApi.error("Please enter your email address");
+      message.error("Please enter your email address");
       return;
     }
     if (!values.password) {
-      messageApi.error("Please enter your password");
+      message.error("Please enter your password");
       return;
     }
-    try {
-      let res: any = await emailLogin(values);
-      if (+res.data.error_code === 0) {
-        authenticate()
-          .then((res) => {
-            console.log("成功了", Date.now(), res);
-          })
-          .catch((error) => {
-            messageApi.error("Login failed, please try again later");
-          });
-      } else {
-        throw res.data?.error_msg;
-      }
-    } catch (err: any) {
-      messageApi.error(err || "Login failed, please try again later");
+
+    if (!isRegister) {
+      // 点击登录
+      sendTA("XWEB_CLICK", {
+        name: "login",
+        style: "sign_in",
+        container: Cookies.get("userId"),
+      });
+      
+      handleLogin(values, "login");
     }
   };
+
+  function handleLogin(values: any, type: string) {}
+  const [passwordError, setPasswordError] = useState(false);
+
+  const [isActive, setIsActive] = useState(false);
+  /**获取验证码 */
+  function getShortFn() {
+    return;
+  }
+
+  const [time, setTime] = React.useState(60);
+  const [isRunning, toggleIsRunning] = useBoolean(true);
+
+  useInterval(
+    () => {
+      setTime(time - 1);
+
+      if (time <= 0) {
+        toggleIsRunning();
+        setTime(60);
+      }
+    },
+    isRunning ? 1000 : null
+  );
+  /**点击注册 */
+  function registerFn() {}
+
+  function signInFn() {}
+  function signUpFn() {}
 
   const [googleLoading, toggleGoogleLoading] = useBoolean(false);
   /**谷歌登录 */
   function gooogleLoginFn() {}
 
+  
   return (
     <>
-      {contextHolder}
       <div className="w-full h-100vh !absolute left-0 top-0 bg-[#fff] pt-16">
         <img
           className="w-35.7vw absolute top-0 right-0 z-2"
@@ -102,7 +131,7 @@ export default function LoginPage() {
                 scroll ? "" : "mt-2"
               }`}
             >
-              Welcome Back
+              Get started for free
             </h2>
             <Form
               className="w-full"
@@ -110,7 +139,8 @@ export default function LoginPage() {
               form={form}
               onFinish={onFinish}
             >
-              <Form.Item label="Email" name="email">
+              <Form.Item label="Email" name="email"
+              >
                 <Input
                   autoComplete=""
                   placeholder="name@example.com"
@@ -118,21 +148,67 @@ export default function LoginPage() {
                 />
               </Form.Item>
               <Form.Item label="Password" name="password">
+                {/*    <div> */}
                 <Input.Password
                   autoComplete=""
                   placeholder="Password"
                   className="!bg-[#F0F0F0] !rounded-2 w-full !px-5  !h-10 !leading-10 !text-[#040608] !text-4 !fw-500 !focus:shadow-none !b-2 !b-[#F0F0F0] !focus:b-[#040608]"
                 />
+                {/*     {isRegister && passwordError && (
+                    <div className="w-full text-[#040608] text-4.5 fw-300 flex flex-items-center">
+                      <img
+                        className="w-4.5 h-4.5 mr-1"
+                        src="/assets/img/login/login_error.png"
+                      />
+                      Password between 6 to 20 characters
+                    </div>
+                  )}
+                </div> */}
               </Form.Item>
 
-              <Form.Item>
-                <Link
-                  href="/resetPassword"
-                  className="w-full block !text-[#040608] !text-4 !fw-500 text-right cursor-pointer"
-                >
-                  Forgot password?
-                </Link>
-              </Form.Item>
+              {isRegister && (
+                <Form.Item label="Code" name="short">
+                  <div>
+                    <Input
+                      type="tel"
+                      autoComplete=""
+                      maxLength={6}
+                      pattern="/d*"
+                      placeholder="Code"
+                      className="!bg-[#F0F0F0] code !rounded-2 w-full !px-5 !pr-30 !h-10 !leading-10 !text-[#040608] !text-4 !fw-500 !focus:shadow-none !b-2 !b-[#F0F0F0] !focus:b-[#040608]"
+                      onPressEnter={codeEnter}
+                    ></Input>
+                    <Button
+                      className={`!absolute !right-2.5 !top-1/2 transform -translate-y-1/2  !h-8 !w-25  ${
+                        isActive ||
+                        formD.getShortLoading ||
+                        formD.registerLoading
+                          ? "!bg-[#CDCDCE]"
+                          : "!bg-[#040608]"
+                      } !text-white !text-3.5 !fw-400  !b-none   !rounded-1`}
+                      disabled={
+                        isActive ||
+                        formD.getShortLoading ||
+                        formD.registerLoading
+                      }
+                      onClick={getShortFn}
+                    >
+                      {isActive ? `${time}s` : "Get code"}
+                    </Button>
+                  </div>
+                </Form.Item>
+              )}
+
+              {!isRegister && (
+                <Form.Item>
+                  <span
+                    className="w-full block !text-[#040608] !text-4 !fw-500 text-right cursor-pointer"
+                    onClick={() => router.push("/resetPassword")}
+                  >
+                    Forgot password?
+                  </span>
+                </Form.Item>
+              )}
 
               <Form.Item>
                 <Button
@@ -144,18 +220,33 @@ export default function LoginPage() {
                   loading={formD.registerLoading || formD.loginLoading}
                   className="w-full !h-10 !text-4 !text-white !fw-700 !rounded-2 text-center !b-0"
                 >
-                  Sign in
+                  {isRegister ? "Sign up" : "Sign in"}
                 </Button>
               </Form.Item>
             </Form>
             <div className="w-full h-12 mb-1 text-[#040608] text-4 fw-300 flex flex-justify-center">
-              Don't have an account?
-              <Link
-                href="/signup"
-                className="fw-700 ml-5 cursor-pointer mt--0.25"
-              >
-                Sign up
-              </Link>
+              {isRegister && (
+                <>
+                  Already have an account?
+                  <span
+                    className="fw-700 ml-5 cursor-pointer"
+                    onClick={signInFn}
+                  >
+                    Sign in
+                  </span>
+                </>
+              )}
+              {!isRegister && (
+                <>
+                  Don't have an account?
+                  <span
+                    className="fw-700 ml-5 cursor-pointer mt--0.25"
+                    onClick={signUpFn}
+                  >
+                    Sign up
+                  </span>
+                </>
+              )}
             </div>
 
             <div className="w-full h-0.25 mb-8 bg-[#E6E6E6] flex">
