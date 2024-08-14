@@ -1,16 +1,21 @@
 "use client";
 import "./index.scss";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Dropdown, Button, Drawer } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
 import { sendTA } from "@/lib/js/TA";
+import { useSession } from "next-auth/react";
 const Header = () => {
+  const { data: session, status } = useSession();
+  const isLoggedIn = session && session.user?.userId;
+
   const pathname = usePathname();
-  const gd = { isLogin: false };
   const sendTAFn = (style: string) => {
+    console.log('?????');
+    
     sendTA("XWEB_CLICK", {
       name: "home_page",
       style,
@@ -18,9 +23,10 @@ const Header = () => {
     });
   };
   const [menuVisible, setMenuVisible] = useState(false);
+
   return (
     <>
-      {!pathname.includes("/iframe") && (
+      {!pathname.startsWith("/iframe") && (
         <header className="sticky top-0 z-10   header backdrop-blur drop-shadow-sm h-16 px-8 lg:px-14vw flex flex-justify-between items-center text-sm select-none z-999">
           <Link href="/" className="fcc gap-3">
             <img alt="logo" src="/assets/img/logo.png" className="h-12" />
@@ -135,38 +141,46 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="hidden md:flex items-center">
-            {gd.isLogin && (
+          <div className="hidden md:flex items-center w-50">
+            {status === "loading" ? (
+              <></>
+            ) : (
               <>
-                <Link href="/help">
-                  <span className="mr-4">Help</span>
-                </Link>
-                <Link href="/center">
-                  <span className="mr-4">Chatbots</span>
-                </Link>
-                <Link href="/account/info">
-                  <Button className="!fw-500 !rounded-2 !w-124px !h-10 !border-#040608">
-                    Account →
-                  </Button>
-                </Link>
-              </>
-            )}
-            {!gd.isLogin && !pathname.includes("/login") && (
-              <>
-                <Link href="/login">
-                  <span className="mr-4">Log in</span>
-                </Link>
-                <Link href="/login?isRegister=1">
-                  <Button
-                    className="!fw-500 !w-124px !h-10 !border-#040608"
-                    onClick={() => sendTAFn("sign up free")}
-                  >
-                    Sign Up Free →
-                  </Button>
-                </Link>
+                {isLoggedIn && (
+                  <>
+                    <Link href="/help">
+                      <span className="mr-4">Help</span>
+                    </Link>
+                    <Link href="/center">
+                      <span className="mr-4">Chatbots</span>
+                    </Link>
+                    <Link href="/account/info">
+                      <Button className="!fw-500 !rounded-2 !w-124px !h-10 !border-#040608">
+                        Account →
+                      </Button>
+                    </Link>
+                  </>
+                )}
+                {/*没登录，并且在登录界面，不显示右上角的登录  */}
+                {!isLoggedIn && !pathname.includes("/login") && (
+                  <>
+                    <Link href="/login">
+                      <span className="mr-4">Log in</span>
+                    </Link>
+                    <Link href="/login?isRegister=1">
+                      <Button
+                        className="!fw-500 !w-124px !h-10 !border-#040608"
+                        onClick={() => sendTAFn("sign up free")}
+                      >
+                        Sign Up Free →
+                      </Button>
+                    </Link>
+                  </>
+                )}
               </>
             )}
           </div>
+
           <MenuOutlined
             className="block !md:hidden text-5 !text-black w-5 h-5"
             onClick={() => setMenuVisible(true)}
@@ -195,43 +209,46 @@ const Header = () => {
                   Blog
                 </Link>
               </div>
+              {status === "loading" ? (
+                <></>
+              ) : (
+                <div
+                  className="flex flex-col gap-4 !text-[#000]"
+                  onClick={() => setMenuVisible(false)}
+                >
+                  {isLoggedIn && (
+                    <>
+                      <Link href="/help">
+                        <span className="text-base !text-[#000]">Help</span>
+                      </Link>
+                      <Link href="/center">
+                        <span className="text-base !text-[#000]">Chatbots</span>
+                      </Link>
+                      <Link href="/account/info">
+                        <Button className="fw-500 !rounded-2 !w-124px !h-10 !border-#040608 !text-[#000] !text-16px">
+                          Account →
+                        </Button>
+                      </Link>
+                    </>
+                  )}
 
-              <div
-                className="flex flex-col gap-4 !text-[#000]"
-                onClick={() => setMenuVisible(false)}
-              >
-                {gd.isLogin && (
-                  <>
-                    <Link href="/help">
-                      <span className="text-base !text-[#000]">Help</span>
-                    </Link>
-                    <Link href="/center">
-                      <span className="text-base !text-[#000]">Chatbots</span>
-                    </Link>
-                    <Link href="/account/info">
-                      <Button className="fw-500 !rounded-2 !w-124px !h-10 !border-#040608 !text-[#000] !text-16px">
-                        Account →
-                      </Button>
-                    </Link>
-                  </>
-                )}
-
-                {!gd.isLogin && !pathname.includes("/login") && (
-                  <>
-                    <Link href="/login">
-                      <span className="text-base !text-[#000]">Log in</span>
-                    </Link>
-                    <Link href="/login?isRegister=1">
-                      <Button
-                        className="!fw-500 !w-124px !h-10 !border-#040608 !text-#000"
-                        onClick={() => sendTAFn("try for free")}
-                      >
-                        Try for Free →
-                      </Button>
-                    </Link>
-                  </>
-                )}
-              </div>
+                  {!isLoggedIn && !pathname.includes("/login") && (
+                    <>
+                      <Link href="/login">
+                        <span className="text-base !text-[#000]">Log in</span>
+                      </Link>
+                      <Link href="/login?isRegister=1">
+                        <Button
+                          className="!fw-500 !w-124px !h-10 !border-#040608 !text-#000"
+                          onClick={() => sendTAFn("try for free")}
+                        >
+                          Try for Free →
+                        </Button>
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           </Drawer>
         </header>

@@ -7,8 +7,9 @@ import type { Viewport } from "next";
 import Header from "@/components/header";
 import AppInit from "./app";
 import { ConfigProvider } from "antd";
-import dayjs from 'dayjs'
-dayjs.locale('en')
+import { SessionProvider } from "next-auth/react";
+import dayjs from "dayjs";
+dayjs.locale("en");
 
 export const metadata: Metadata = {
   title: "Chatbond - AI Chatbot Builder",
@@ -93,15 +94,16 @@ export default function RootLayout({
               },
             }}
           >
-            <div id="app">
-              <AppInit />
-              <Header />
-
-              <div>{children}</div>
-            </div>
+            <SessionProvider>
+              <div id="app">
+                <AppInit />
+                <Header />
+                <div>{children}</div>
+              </div>
+            </SessionProvider>
           </ConfigProvider>
         </AntdRegistry>
-      {/*   <Script
+        {/*   <Script
           src="/iframe.min.js"
           data-chatbotId="super"
           strategy="lazyOnload"

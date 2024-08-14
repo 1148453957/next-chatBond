@@ -62,14 +62,6 @@ export const initTA = () => {
     };
 
     ta.init(config);
-    // TODO:
-    // 设置用户属性
-    /* const gd = useGlobalData()
-    const userId = gd.userId
-    if (userId) {
-      ta.userSet({ userId })
-    } */
-
     // 每个打点都会加的属性
     ta.setDynamicSuperProperties(() => {
       const channelId = Cookies.get("channelId") || "10000";
