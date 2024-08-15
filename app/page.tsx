@@ -3,8 +3,9 @@ import './home.scss';
 
 import { sendTA } from "@/lib/js/TA";
 import Cookies from "js-cookie";
-import Lottie from "@/components/Lottie";
 import Link from "next/link";
+import animationData from "./lottie.json";
+import Lottie from "lottie-react";
 
 export default function Home() {
   const sendTAFn = (style: string) => {
@@ -62,7 +63,8 @@ export default function Home() {
               className="w-328px h-16 mt-10 text-center mx-auto"
               onClick={() => sendTAFn("try for free")}
             >
-              <Lottie />
+                 <Lottie animationData={animationData} />;
+ 
             </div>
           </Link>
           <div className="tip text-12px font-400 mx-auto fcc mt-4 font-[Inter] text-#818283">
@@ -381,7 +383,8 @@ export default function Home() {
               className="w-328px h-16 mt-10 text-center mx-auto mb-18"
               onClick={() => sendTAFn("try for free")}
             >
-              <Lottie />
+                  <Lottie animationData={animationData} />;
+ 
             </div>
           </Link>
         </section>

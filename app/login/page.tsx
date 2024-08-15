@@ -8,8 +8,16 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { message } from "antd";
 import { emailLogin } from "@/api/login";
-
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 export default function LoginPage() {
+  const { data: session } = useSession();
+  const isLoggedIn = session?.user?.userId;
+  // 已经登录过，自动跳转首页
+  if (isLoggedIn) {
+    redirect("/");
+  }
+
   const [scroll, setScroll] = useState(true);
   const [messageApi, contextHolder] = message.useMessage();
   const updateWindowHeight = () => {
@@ -71,8 +79,6 @@ export default function LoginPage() {
         throw res.data?.error_msg;
       }
     } catch (err: any) {
-      console.log('???????');
-      
       messageApi.error(err || "Login failed, please try again later");
     }
   };

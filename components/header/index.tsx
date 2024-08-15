@@ -7,15 +7,10 @@ import { Dropdown, Button, Drawer } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
 import { sendTA } from "@/lib/js/TA";
-import { useSession } from "next-auth/react";
-const Header = () => {
-  const { data: session, status } = useSession();
-  const isLoggedIn = session && session.user?.userId;
-
+const Client = ({ session }: any) => {
+  const isLoggedIn = session?.user?.userId;
   const pathname = usePathname();
   const sendTAFn = (style: string) => {
-    console.log('?????');
-    
     sendTA("XWEB_CLICK", {
       name: "home_page",
       style,
@@ -142,41 +137,35 @@ const Header = () => {
           </div>
 
           <div className="hidden md:flex items-center w-50">
-            {status === "loading" ? (
-              <></>
-            ) : (
+            {isLoggedIn && (
               <>
-                {isLoggedIn && (
-                  <>
-                    <Link href="/help">
-                      <span className="mr-4">Help</span>
-                    </Link>
-                    <Link href="/center">
-                      <span className="mr-4">Chatbots</span>
-                    </Link>
-                    <Link href="/account/info">
-                      <Button className="!fw-500 !rounded-2 !w-124px !h-10 !border-#040608">
-                        Account →
-                      </Button>
-                    </Link>
-                  </>
-                )}
-                {/*没登录，并且在登录界面，不显示右上角的登录  */}
-                {!isLoggedIn && !pathname.includes("/login") && (
-                  <>
-                    <Link href="/login">
-                      <span className="mr-4">Log in</span>
-                    </Link>
-                    <Link href="/login?isRegister=1">
-                      <Button
-                        className="!fw-500 !w-124px !h-10 !border-#040608"
-                        onClick={() => sendTAFn("sign up free")}
-                      >
-                        Sign Up Free →
-                      </Button>
-                    </Link>
-                  </>
-                )}
+                <Link href="/help">
+                  <span className="mr-4">Help</span>
+                </Link>
+                <Link href="/center">
+                  <span className="mr-4">Chatbots</span>
+                </Link>
+                <Link href="/account/info">
+                  <Button className="!fw-500 !rounded-2 !w-124px !h-10 !border-#040608">
+                    Account →
+                  </Button>
+                </Link>
+              </>
+            )}
+            {/*没登录，并且在登录界面，不显示右上角的登录  */}
+            {!isLoggedIn && !pathname.includes("/login") && (
+              <>
+                <Link href="/login">
+                  <span className="mr-4">Log in</span>
+                </Link>
+                <Link href="/login?isRegister=1">
+                  <Button
+                    className="!fw-500 !w-124px !h-10 !border-#040608"
+                    onClick={() => sendTAFn("sign up free")}
+                  >
+                    Sign Up Free →
+                  </Button>
+                </Link>
               </>
             )}
           </div>
@@ -209,46 +198,43 @@ const Header = () => {
                   Blog
                 </Link>
               </div>
-              {status === "loading" ? (
-                <></>
-              ) : (
-                <div
-                  className="flex flex-col gap-4 !text-[#000]"
-                  onClick={() => setMenuVisible(false)}
-                >
-                  {isLoggedIn && (
-                    <>
-                      <Link href="/help">
-                        <span className="text-base !text-[#000]">Help</span>
-                      </Link>
-                      <Link href="/center">
-                        <span className="text-base !text-[#000]">Chatbots</span>
-                      </Link>
-                      <Link href="/account/info">
-                        <Button className="fw-500 !rounded-2 !w-124px !h-10 !border-#040608 !text-[#000] !text-16px">
-                          Account →
-                        </Button>
-                      </Link>
-                    </>
-                  )}
 
-                  {!isLoggedIn && !pathname.includes("/login") && (
-                    <>
-                      <Link href="/login">
-                        <span className="text-base !text-[#000]">Log in</span>
-                      </Link>
-                      <Link href="/login?isRegister=1">
-                        <Button
-                          className="!fw-500 !w-124px !h-10 !border-#040608 !text-#000"
-                          onClick={() => sendTAFn("try for free")}
-                        >
-                          Try for Free →
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                </div>
-              )}
+              <div
+                className="flex flex-col gap-4 !text-[#000]"
+                onClick={() => setMenuVisible(false)}
+              >
+                {isLoggedIn && (
+                  <>
+                    <Link href="/help">
+                      <span className="text-base !text-[#000]">Help</span>
+                    </Link>
+                    <Link href="/center">
+                      <span className="text-base !text-[#000]">Chatbots</span>
+                    </Link>
+                    <Link href="/account/info">
+                      <Button className="fw-500 !rounded-2 !w-124px !h-10 !border-#040608 !text-[#000] !text-16px">
+                        Account →
+                      </Button>
+                    </Link>
+                  </>
+                )}
+
+                {!isLoggedIn && !pathname.includes("/login") && (
+                  <>
+                    <Link href="/login">
+                      <span className="text-base !text-[#000]">Log in</span>
+                    </Link>
+                    <Link href="/login?isRegister=1">
+                      <Button
+                        className="!fw-500 !w-124px !h-10 !border-#040608 !text-#000"
+                        onClick={() => sendTAFn("try for free")}
+                      >
+                        Try for Free →
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </Drawer>
         </header>
@@ -256,4 +242,4 @@ const Header = () => {
     </>
   );
 };
-export default Header;
+export default Client;

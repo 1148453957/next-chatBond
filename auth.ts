@@ -46,8 +46,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       options: {
         httpOnly: true,
         path: "/",
-        maxAge: undefined,
-        expires: undefined, // 将 expires 设置为 undefined 使其成为会话 cookie
+        maxAge: undefined, // 将 maxAge 设置为 undefined 使其成为会话 cookie
       },
     },
   },
@@ -57,7 +56,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     session: async ({ session, token }) => {
       session.user = { ...session.user, ...token } as any;
-
       return session;
     },
   },

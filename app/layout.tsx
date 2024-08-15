@@ -10,6 +10,7 @@ import { ConfigProvider } from "antd";
 import { SessionProvider } from "next-auth/react";
 import dayjs from "dayjs";
 dayjs.locale("en");
+import { auth } from "@/auth";
 
 export const metadata: Metadata = {
   title: "Chatbond - AI Chatbot Builder",
@@ -52,11 +53,12 @@ export const viewport: Viewport = {
   userScalable: false,
   viewportFit: "cover",
 };
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
   return (
     <html lang="en">
       <Script
@@ -94,10 +96,10 @@ export default function RootLayout({
               },
             }}
           >
-            <SessionProvider>
+            <SessionProvider session={session}>
               <div id="app">
                 <AppInit />
-                <Header />
+                <Header session={session} />
                 <div>{children}</div>
               </div>
             </SessionProvider>

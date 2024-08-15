@@ -37,10 +37,6 @@ http.interceptors.response.use(
       data: { code },
     } = response;
     if (+code === 44014 || +code === 44004 || +code === 601) {
-      /*  const gd = useGlobalData()
-      gd.logOut() */
-
-      // redirect('/login'+encodeURIComponent(router.currentRoute.fullPath))
       redirect("/login");
       return Promise.reject("Login expired");
     }
@@ -56,6 +52,8 @@ http.interceptors.response.use(
     }
   },
   function (error) {
+    console.log(9999,error);
+    
     return Promise.reject(error.message || error);
   }
 );
