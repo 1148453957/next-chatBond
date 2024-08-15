@@ -40,6 +40,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
   },
+  cookies: {
+    sessionToken: {
+      name: "authjs.session-token",
+      options: {
+        httpOnly: true,
+        path: "/",
+        maxAge: undefined,
+        expires: undefined, // 将 expires 设置为 undefined 使其成为会话 cookie
+      },
+    },
+  },
   callbacks: {
     jwt: async ({ token, user }) => {
       return { ...token, ...user };
