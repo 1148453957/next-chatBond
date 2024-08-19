@@ -39,7 +39,7 @@ const getTiming = () => {
   }
 };
 
-export const initTA = () => {
+export const initTA = (userId: any) => {
   try {
     XalContext.init(
       base_info.packageName,
@@ -62,6 +62,10 @@ export const initTA = () => {
     };
 
     ta.init(config);
+    if (userId) {
+      ta.userSet({ userId });
+    }
+
     // 每个打点都会加的属性
     ta.setDynamicSuperProperties(() => {
       const channelId = Cookies.get("channelId") || "10000";

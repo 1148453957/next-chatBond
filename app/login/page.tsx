@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useBoolean } from "react-use";
-import { authenticate } from "./action";
+import { authenticate, getSessionData } from "./action";
 import { Form, Input, Button } from "antd";
 import { sendTA } from "@/lib/js/TA";
 import Cookies from "js-cookie";
@@ -9,20 +9,29 @@ import Link from "next/link";
 import { message } from "antd";
 import { emailLogin } from "@/api/login";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
+import { redirect, useSearchParams, useRouter } from "next/navigation";
+import { generateCryptoRandomState } from "@/lib/js/utils";
+import { googleId, googleRedirectUrl } from "@/api";
+
 export default function LoginPage() {
+  const router = useRouter();
+  const env = process.env.NEXT_PUBLIC_RUN_ENV;
   const { data: session } = useSession();
+
   const isLoggedIn = session?.user?.userId;
   // 已经登录过，自动跳转首页
   if (isLoggedIn) {
     redirect("/");
   }
-
   const [scroll, setScroll] = useState(true);
   const [messageApi, contextHolder] = message.useMessage();
   const updateWindowHeight = () => {
     setScroll(window.innerHeight > 750);
   };
+  const redirectUrl = decodeURIComponent(
+    `${useSearchParams().get("r") ?? "/center"}`
+  );
+
   useEffect(() => {
     setScroll(window.innerHeight > 750);
 
@@ -30,27 +39,13 @@ export default function LoginPage() {
     return () => {
       window.removeEventListener("resize", updateWindowHeight);
     };
-  });
-
-  const [formD, setFormD] = useState({
-    email: "",
-    password: "",
-    short: "",
-    getShortLoading: false,
-    registerLoading: false,
-    loginLoading: false,
-    agree: false,
-  });
-
-  const [loginLoading, setLoginLoading] = useState(false);
+  }, []);
 
   const [form] = Form.useForm();
-  const emailValue = Form.useWatch("email", form);
-  const passwordValue = Form.useWatch("password", form);
-  const shortValue = Form.useWatch("short", form);
+  const [loginLoading, setLoginLoading] = useState(false);
+
   const onFinish = async (values: any) => {
     // 密码框敲击回车的时候，也会自动触发
-    console.log("Success:", values);
     sendTA("XWEB_CLICK", {
       name: "login",
       style: "sign_in",
@@ -65,27 +60,88 @@ export default function LoginPage() {
       messageApi.error("Please enter your password");
       return;
     }
+    setLoginLoading(true);
+
     try {
       let res: any = await emailLogin(values);
       if (+res.data.error_code === 0) {
         authenticate()
-          .then((res) => {
-            console.log("成功了", Date.now(), res);
+          .then(async (res) => {
+            sendTA("XWEB_CLICK", {
+              name: "login",
+              style: "login_success",
+              container: Cookies.get("userId"),
+            });
+            const session = await getSessionData();
+
+            Cookies.set("userId", session?.user?.userId as any, {
+              domain: env == "prod" ? ".chatbond.co" : ".aecoapps.com",
+            });
+            /*  Cookies.set('isLogined', '1', {
+              domain: env == 'prod' ? '.chatbond.co' : '.aecoapps.com',
+            }) */
+            router.push(redirectUrl);
           })
-          .catch((error) => {
+          .catch((error: any) => {
             messageApi.error("Login failed, please try again later");
+          })
+          .finally(() => {
+            setLoginLoading(false);
           });
       } else {
         throw res.data?.error_msg;
       }
     } catch (err: any) {
       messageApi.error(err || "Login failed, please try again later");
+      setLoginLoading(false);
     }
   };
 
   const [googleLoading, toggleGoogleLoading] = useBoolean(false);
   /**谷歌登录 */
-  function gooogleLoginFn() {}
+  function gooogleLoginFn() {
+    sendTA("XWEB_CLICK", {
+      name: "login",
+      style: "google_login",
+      container: Cookies.get("userId"),
+    });
+    // toggleGoogleLoading()
+    const state = generateCryptoRandomState();
+
+    Cookies.set("allyFyGoogleState", state, {
+      domain: env == "prod" ? ".chatbond.co" : ".aecoapps.com",
+    });
+
+    Cookies.set("allyFyGoogleRedirectUrl", redirectUrl, {
+      domain: env == "prod" ? ".chatbond.co" : ".aecoapps.com",
+    });
+
+    let oauth2Endpoint = "https://accounts.google.com/o/oauth2/v2/auth";
+
+    let form = document.createElement("form");
+    form.setAttribute("method", "GET"); // Send as a GET request.
+    form.setAttribute("action", oauth2Endpoint);
+
+    let params = {
+      client_id: googleId,
+      redirect_uri: googleRedirectUrl,
+      scope: "email openid profile",
+      state: state,
+      include_granted_scopes: "true",
+      response_type: "code",
+    } as any;
+
+    for (let p in params) {
+      let input = document.createElement("input");
+      input.setAttribute("type", "hidden");
+      input.setAttribute("name", p);
+      input.setAttribute("value", params[p]);
+      form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+  }
 
   return (
     <>
@@ -149,7 +205,7 @@ export default function LoginPage() {
                       "linear-gradient(90deg, #83e10a 0%, #0ac655 100%)",
                   }}
                   htmlType="submit"
-                  loading={formD.registerLoading || formD.loginLoading}
+                  loading={loginLoading}
                   className="w-full !h-10 !text-4 !text-white !fw-700 !rounded-2 text-center !b-0"
                 >
                   Sign in
@@ -161,6 +217,13 @@ export default function LoginPage() {
               <Link
                 href="/signup"
                 className="fw-700 ml-5 cursor-pointer mt--0.25"
+                onClick={() => {
+                  sendTA("XWEB_CLICK", {
+                    name: "login",
+                    style: "sign_up",
+                    container: Cookies.get("userId"),
+                  });
+                }}
               >
                 Sign up
               </Link>

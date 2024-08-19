@@ -12,7 +12,6 @@ export const http = axios.create({
 });
 http.interceptors.request.use((config) => {
   const cookieStore = cookies();
-
   if (config.withoutBaseInfo) {
     // paypal支付的时候，不能额外传参
   } else {
@@ -52,8 +51,6 @@ http.interceptors.response.use(
     }
   },
   function (error) {
-    console.log(9999,error);
-    
     return Promise.reject(error.message || error);
   }
 );

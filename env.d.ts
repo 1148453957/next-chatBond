@@ -7,9 +7,6 @@ interface ImportMetaEnv {
 }
 
 declare module 'vditor/dist/method.min'
-declare module 'vue'
-declare module 'ant-design-vue'
-
 declare type AnyObject = Record<string, any>
 declare module 'seedrandom'
 declare module 'jsrsasign'

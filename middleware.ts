@@ -19,7 +19,7 @@ export const config = {
   matcher: [
     "/help",
     "/account/:path*",
-    "/center",
+   // "/center",
     "/create/:path*",
     "/bot/:path*",
     "/help",

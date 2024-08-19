@@ -99,6 +99,7 @@ export default async function RootLayout({
             <SessionProvider session={session}>
               <div id="app">
                 <AppInit />
+                {/* 这里是额外传参的，不然用useSession不刷新，不知道为啥 */}
                 <Header session={session} />
                 <div>{children}</div>
               </div>

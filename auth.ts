@@ -42,11 +42,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   cookies: {
     sessionToken: {
+      // 依靠这个token去和服务端建立链接，判断是否登录的，cookie里清除掉，就退出登录了
       name: "authjs.session-token",
       options: {
         httpOnly: true,
         path: "/",
-        maxAge: undefined, // 将 maxAge 设置为 undefined 使其成为会话 cookie
+        maxAge: 6 * 60 * 60, // 单位是秒，6个小时后过期，token失效，退出登录，需要重新登陆，
       },
     },
   },

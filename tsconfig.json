@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "es2015", // 或者更高版本，比如 es2017、es2018
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

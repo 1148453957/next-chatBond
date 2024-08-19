@@ -1,8 +1,10 @@
 "use server";
 
-import { signIn } from "@/auth";
+import { signIn, auth } from "@/auth";
 export async function authenticate() {
-  await signIn("credentials",{
-    redirectTo:'/center'
-  });
+  await signIn("credentials");
+}
+
+export async function getSessionData() {
+  return await auth();
 }

@@ -2,12 +2,12 @@
 export const googleId =
   process.env.NEXT_PUBLIC_RUN_ENV == "prod"
     ? "587232671502-fera4an8b18gt1pmdpag8ouge5ogc86g.apps.googleusercontent.com"
-    : "711168951697-h3bpglooumt9kcn8qeqn90ram0a4s5sg.apps.googleusercontent.com";
+    : "678474632478-869oob8s9p4gjt67j469ol0bknjc47c4.apps.googleusercontent.com";
 /**谷歌登录回调地址 */
 export const googleRedirectUrl =
   process.env.NEXT_PUBLIC_RUN_ENV == "prod"
     ? "https://www.chatbond.co"
-    : "http://localhost";
+    : "http://test-bot.aecoapps.com/center";
 
 /**stripe支付所需 */
 export const appKey = "optbz50h";
