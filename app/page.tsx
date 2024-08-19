@@ -63,7 +63,7 @@ export default function Home() {
               className="w-328px h-16 mt-10 text-center mx-auto"
               onClick={() => sendTAFn("try for free")}
             >
-                 <Lottie animationData={animationData} />;
+                 <Lottie animationData={animationData} />
  
             </div>
           </Link>
@@ -383,7 +383,7 @@ export default function Home() {
               className="w-328px h-16 mt-10 text-center mx-auto mb-18"
               onClick={() => sendTAFn("try for free")}
             >
-                  <Lottie animationData={animationData} />;
+                  <Lottie animationData={animationData} />
  
             </div>
           </Link>

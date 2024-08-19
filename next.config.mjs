@@ -7,6 +7,7 @@ const nextConfig = {
     NEXT_PUBLIC_PAY_HOST: process.env.NEXT_PUBLIC_PAY_HOST,
     NEXT_PUBLIC_API_HOST: process.env.NEXT_PUBLIC_API_HOST,
   },
+  reactStrictMode: false,// 关闭严格模式，避免渲染两次
 };
 
 export default nextConfig;

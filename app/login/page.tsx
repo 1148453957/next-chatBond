@@ -1,19 +1,18 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useBoolean } from "react-use";
 import { authenticate, getSessionData } from "./action";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import { sendTA } from "@/lib/js/TA";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { message } from "antd";
 import { emailLogin } from "@/api/login";
 import { useSession } from "next-auth/react";
-import { redirect, useSearchParams, useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { generateCryptoRandomState } from "@/lib/js/utils";
 import { googleId, googleRedirectUrl } from "@/api";
 
-export default function LoginPage() {
+export default function LoginPage({ searchParams }: any) {
   const router = useRouter();
   const env = process.env.NEXT_PUBLIC_RUN_ENV;
   const { data: session } = useSession();
@@ -28,9 +27,7 @@ export default function LoginPage() {
   const updateWindowHeight = () => {
     setScroll(window.innerHeight > 750);
   };
-  const redirectUrl = decodeURIComponent(
-    `${useSearchParams().get("r") ?? "/center"}`
-  );
+  const redirectUrl = decodeURIComponent(`${searchParams.r ?? "/center"}`);
 
   useEffect(() => {
     setScroll(window.innerHeight > 750);
