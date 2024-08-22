@@ -18,6 +18,7 @@ const Client = ({ session }: any) => {
     });
   };
   const [menuVisible, setMenuVisible] = useState(false);
+  const env = process.env.NEXT_PUBLIC_RUN_ENV;
 
   return (
     <>
@@ -32,7 +33,9 @@ const Client = ({ session }: any) => {
             />
           </Link>
           <div className="flex gap-12" v-if="route?.path !== '/login'">
+          {env}
             <div className="text-center text-white/50  hidden md:flex items-center m-auto gap-4">
+              
               <Link href="/exchange" className="text-#000">
                 Exchange
               </Link>

@@ -63,10 +63,11 @@ export default async function RootLayout({
     <html lang="en">
       <Script
         async
+        id='googletagmanager'
         src="https://www.googletagmanager.com/gtag/js?id=G-W051S4P94D"
       />
 
-      <Script>
+      <Script id='gtag'>
         {`
           window.dataLayer = window.dataLayer || []
           function gtag() {
@@ -77,7 +78,9 @@ export default async function RootLayout({
           gtag('config', 'G-W051S4P94D')
         `}
       </Script>
-      <Script type="application/ld+json">
+      <Script type="application/ld+json" 
+        id='json'
+        >
         {`{
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -107,6 +110,8 @@ export default async function RootLayout({
           </ConfigProvider>
         </AntdRegistry>
         {/*   <Script
+        id='iframe'
+
           src="/iframe.min.js"
           data-chatbotId="super"
           strategy="lazyOnload"

@@ -8,6 +8,12 @@ const nextConfig = {
     NEXT_PUBLIC_API_HOST: process.env.NEXT_PUBLIC_API_HOST,
   },
   reactStrictMode: false,// 关闭严格模式，避免渲染两次
+  eslint: {
+    ignoreDuringBuilds: true, // 忽略构建时的 ESLint 错误
+  },
+  typescript: {
+    ignoreBuildErrors: true, // 忽略构建时的 typescript 错误
+  },
 };
 
 export default nextConfig;

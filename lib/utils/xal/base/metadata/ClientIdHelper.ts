@@ -23,7 +23,7 @@ export class ClientIdHelper {
       return this.clientId
     }
     // 从持久化文件读取
-    let cidStore: string = localStorage.getItem(this.cidKey)
+    let cidStore: string = localStorage.getItem(this.cidKey)!
     if (cidStore != null && cidStore != '') {
       this.clientId = cidStore
       XalDebuger.logWithTag(

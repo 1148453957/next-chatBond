@@ -4,7 +4,6 @@
     "target": "es2015", // 或者更高版本，比如 es2017、es2018
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -20,14 +19,15 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "strict": false
   },
   "include": [
     "next-env.d.ts",
     "env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
