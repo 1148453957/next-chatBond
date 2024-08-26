@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": " next dev -p 890",
+    "dev": " next dev -p 80",
     "build": "next build ",
     "start": "next start -p 80",
     "lint": "next lint"
@@ -17,6 +17,7 @@
     "antd": "^5.20.0",
     "axios": "^1.7.4",
     "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.13",
     "js-cookie": "^3.0.5",
     "jsrsasign": "^11.1.0",
     "less-loader": "^12.2.0",

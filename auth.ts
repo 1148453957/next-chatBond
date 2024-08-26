@@ -60,6 +60,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  trustHost: true, //这里不写会报错，不知道为啥，没有读到.env里面的配置
-  secret: "aJaOZZl7No0C/HTp/BsLbNTh/asSgWD6Ux1IQxIV3Ow=", //这里不写会报错，不知道为啥，没有读到.env里面的配置
+  trustHost: true, //这里不写会打包的时候会报错，不知道为啥，没有读到.env里面的配置
+  secret: "aJaOZZl7No0C/HTp/BsLbNTh/asSgWD6Ux1IQxIV3Ow=", //这里不写会打包的时候会报错，不知道为啥，没有读到.env里面的配置
 });

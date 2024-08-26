@@ -1,8 +1,10 @@
 "use server";
 
 import { signIn, auth } from "@/auth";
-export async function authenticate() {
-  await signIn("credentials");
+export async function authenticate(redirectTo) {
+  await signIn("credentials", {
+    redirectTo,
+  });
 }
 
 export async function getSessionData() {

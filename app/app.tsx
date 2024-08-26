@@ -1,15 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import Cookies from "js-cookie";
 import { initTA } from "@/lib/js/TA";
 import { base_info } from "@/api";
 import { getUrlParam } from "@/lib/js/utils";
-import { useSession } from "next-auth/react";
 
-export default function AppInit() {
+export default function AppInit({ session }: any) {
   const env = process.env.NEXT_PUBLIC_RUN_ENV;
-  const { data: session } = useSession();
 
   useEffect(() => {
     const channelId = getUrlParam("c"); //推广渠道id

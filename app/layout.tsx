@@ -7,7 +7,6 @@ import type { Viewport } from "next";
 import Header from "@/components/header";
 import AppInit from "./app";
 import { ConfigProvider } from "antd";
-import { SessionProvider } from "next-auth/react";
 import dayjs from "dayjs";
 dayjs.locale("en");
 import { auth } from "@/auth";
@@ -63,11 +62,11 @@ export default async function RootLayout({
     <html lang="en">
       <Script
         async
-        id='googletagmanager'
+        id="googletagmanager"
         src="https://www.googletagmanager.com/gtag/js?id=G-W051S4P94D"
       />
 
-      <Script id='gtag'>
+      <Script id="gtag">
         {`
           window.dataLayer = window.dataLayer || []
           function gtag() {
@@ -78,9 +77,7 @@ export default async function RootLayout({
           gtag('config', 'G-W051S4P94D')
         `}
       </Script>
-      <Script type="application/ld+json" 
-        id='json'
-        >
+      <Script type="application/ld+json" id="json">
         {`{
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -91,7 +88,8 @@ export default async function RootLayout({
       </Script>
 
       <body>
-        <AntdRegistry>
+        {/* 不加hashPriority="high"，部署以后样式会失效，:where的原因 */}
+        <AntdRegistry hashPriority="high">
           <ConfigProvider
             theme={{
               token: {
@@ -99,14 +97,12 @@ export default async function RootLayout({
               },
             }}
           >
-            <SessionProvider session={session}>
-              <div id="app">
-                <AppInit />
-                {/* 这里是额外传参的，不然用useSession不刷新，不知道为啥 */}
-                <Header session={session} />
-                <div>{children}</div>
-              </div>
-            </SessionProvider>
+            <div id="app">
+              {/* 这里是额外传参的，不然用useSession不刷新，不知道为啥 */}
+              <AppInit session={session}/>
+              <Header session={session} />
+              {children}
+            </div>
           </ConfigProvider>
         </AntdRegistry>
         {/*   <Script

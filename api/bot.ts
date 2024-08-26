@@ -26,7 +26,6 @@ http.interceptors.request.use((config) => {
   cookieStore
     .getAll()
     .forEach((cookie) => (str += `${cookie.name}=${cookie.value};`));
-
   config.headers.cookie = str;
   return config;
 });
