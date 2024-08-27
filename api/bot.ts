@@ -1,8 +1,8 @@
 "use server";
 import axios from "axios";
-import { redirect } from "next/navigation";
 import { appId, packageName } from "./index";
 import { cookies } from "next/headers";
+import { signOut } from "@/auth";
 export const http = axios.create({
   headers: {
     appId,
@@ -30,17 +30,23 @@ http.interceptors.request.use((config) => {
   return config;
 });
 http.interceptors.response.use(
-  function (response: any) {
+  async function (response: any) {
     const {
       data: { code },
     } = response;
     if (+code === 44014 || +code === 44004 || +code === 601) {
-      redirect("/login");
-      return Promise.reject("Login expired");
+      // cookie校验失败，重新登录
+      await signOut({
+        redirectTo: "/login?code=601",
+      });
+      return Promise.reject("Login expired, please login first");
     }
     if (response?.config?.url.includes("/export")) {
-      if (response.data) return response.data;
-      else Promise.reject("Download failed");
+      if (response.data) {
+        return response.data;
+      } else {
+        return Promise.reject("Download failed");
+      }
     }
 
     if ([1].includes(code)) {

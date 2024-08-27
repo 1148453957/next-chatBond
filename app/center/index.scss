@@ -1,0 +1,13 @@
+._ItemWA {
+  --waCardMinWidth: 190px;
+  grid-template-columns: repeat(auto-fill, minmax(var(--waCardMinWidth), 1fr));
+
+  @media screen and (min-width: 980px) {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  @media screen and (max-width: 600px) {
+    --waCardMinWidth: 120px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

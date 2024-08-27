@@ -27,6 +27,9 @@ export default function LoginPage({ session, searchParams }: any) {
   const redirectUrl = decodeURIComponent(`${searchParams?.r ?? "/center"}`);
 
   useEffect(() => {
+    if (searchParams.code == 601) {
+      messageApi.error("Login expired, please login first");
+    }
     setScroll(window.innerHeight > 750);
 
     window.addEventListener("resize", updateWindowHeight);
@@ -59,7 +62,7 @@ export default function LoginPage({ session, searchParams }: any) {
     try {
       let res: any = await emailLogin(values);
       if (+res.error_code === 0) {
-        authenticate(redirectUrl)
+        authenticate()
           .then(async () => {
             sendTA("XWEB_CLICK", {
               name: "login",
