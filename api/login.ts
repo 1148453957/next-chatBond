@@ -9,11 +9,26 @@ const http = axios.create({
   withCredentials: true,
 });
 
+http.interceptors.request.use((config) => {
+  const cookieStore = cookies();
+
+  let str = "";
+  cookieStore
+    .getAll()
+    .forEach((cookie) => (str += `${cookie.name}=${cookie.value};`));
+  config.headers.cookie = str;
+  return config;
+});
+
 http.interceptors.response.use(
   function (response: any) {
     // 把登录接口也放在了服务端，所以需要把set-cookie手动存在客户端，但是如果接口都从服务端走到话，似乎客户端也不需要了啊
     // 性能影响呢？
-    if (["/v2/user/login"].some((e) => response.config.url.includes(e))) {
+    if (
+      ["/v2/user/login", "/v2/user/register", "/v2/user/verifycode"].some((e) =>
+        response.config.url.includes(e)
+      )
+    ) {
       if (
         response.headers["set-cookie"] &&
         response.headers["set-cookie"].length > 0

@@ -1,54 +1,49 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useBoolean } from "react-use";
-import { authenticate, getSessionData } from "./action";
+import React, { useEffect, useState } from "react";
+import { useInterval, useBoolean } from "react-use";
+import { authenticate, getSessionData } from "@/app/login/action";
+
 import { Form, Input, Button, message } from "antd";
+import { useRouter, usePathname } from "next/navigation";
 import { sendTA } from "@/lib/js/TA";
 import Cookies from "js-cookie";
-import Link from "next/link";
-import { emailLogin } from "@/api/login";
-import { redirect, useRouter } from "next/navigation";
+import Image from "next/image";
 import { generateCryptoRandomState } from "@/lib/js/utils";
 import { googleId, googleRedirectUrl } from "@/api";
+import { emailRegister, emailVerifyCode } from "@/api/login";
+import Link from "next/link";
 
-export default function LoginPage({ session, searchParams }: any) {
+export default function signUpPage() {
   const router = useRouter();
   const env = process.env.NEXT_PUBLIC_RUN_ENV;
-  const isLoggedIn = session?.user?.userId;
-  // 已经登录过，自动跳转首页
-  if (isLoggedIn) {
-    redirect("/");
-  }
-  const [scroll, setScroll] = useState(true);
   const [messageApi, contextHolder] = message.useMessage();
+
+  const [scroll, setScroll] = useState(true);
+
   const updateWindowHeight = () => {
     setScroll(window.innerHeight > 750);
   };
-  const redirectUrl = decodeURIComponent(`${searchParams?.r ?? "/center"}`);
-
   useEffect(() => {
-    if (searchParams.code == 601) {
-      messageApi.error("Login expired, please login first");
-    }
     setScroll(window.innerHeight > 750);
 
     window.addEventListener("resize", updateWindowHeight);
     return () => {
       window.removeEventListener("resize", updateWindowHeight);
     };
-  }, []);
+  });
 
   const [form] = Form.useForm();
-  const [loginLoading, setLoginLoading] = useState(false);
+  const emailValue = Form.useWatch("email", form);
+  const passwordValue = Form.useWatch("password", form);
+  const [signUpLoading, setSignUpLoading] = useState(false);
 
   const onFinish = async (values: any) => {
-    // 密码框敲击回车的时候，也会自动触发
+    // 验证码框敲击回车的时候，也会自动触发
     sendTA("XWEB_CLICK", {
-      name: "login",
-      style: "sign_in",
+      name: "register",
+      style: "sign_up",
       container: Cookies.get("userId"),
     });
-
     if (!values.email) {
       messageApi.error("Please enter your email address");
       return;
@@ -57,16 +52,22 @@ export default function LoginPage({ session, searchParams }: any) {
       messageApi.error("Please enter your password");
       return;
     }
-    setLoginLoading(true);
-
+    if (!values.short) {
+      messageApi.error("Please enter your code");
+      return;
+    }
+    setSignUpLoading(true);
     try {
-      let res: any = await emailLogin(values);
-      if (+res.error_code === 0) {
+      let data: any = await emailVerifyCode({
+        code: values.short,
+      });
+
+      if (+data.error_code === 0) {
         authenticate()
           .then(async () => {
             sendTA("XWEB_CLICK", {
-              name: "login",
-              style: "login_success",
+              name: "register",
+              style: "register_success",
               container: Cookies.get("userId"),
             });
             const session = await getSessionData();
@@ -74,20 +75,86 @@ export default function LoginPage({ session, searchParams }: any) {
             Cookies.set("userId", session?.user?.userId as any, {
               domain: env == "prod" ? ".chatbond.co" : ".aecoapps.com",
             });
-            router.push(redirectUrl);
+            router.push("/center");
           })
           .catch((error: any) => {
-            messageApi.error("Login failed, please try again later");
-            setLoginLoading(false);
+            messageApi.error("Register failed, please try again later");
+            setSignUpLoading(false);
           });
       } else {
-        throw res?.error_msg;
+        throw data?.error_msg;
       }
     } catch (err: any) {
-      messageApi.error(err || "Login failed, please try again later");
-      setLoginLoading(false);
+      messageApi.error(err || "Register failed, please try again later");
+      setSignUpLoading(false);
     }
   };
+
+  const [passwordError, setPasswordError] = useState(false);
+  const [shortLoading, setShortLoading] = useState(false);
+
+  /**获取验证码 */
+  function getShortFn() {
+    if (!emailValue) {
+      messageApi.error("Please enter your email address");
+      return;
+    }
+    if (!passwordValue) {
+      messageApi.error("Please enter your password");
+      return;
+    }
+
+    if (passwordValue.length < 6 || passwordValue.length > 20) {
+      setPasswordError(true);
+      return;
+    }
+
+    setPasswordError(false);
+    setShortLoading(true);
+    emailRegister({
+      email: emailValue,
+      password: passwordValue,
+    })
+      .then((data: any) => {
+        if (+data.error_code === 0) {
+          messageApi.success(
+            "Please check your email verification code carefully"
+          );
+          toggleIsRunning();
+        } else {
+          throw data;
+        }
+      })
+      .catch((err: any) => {
+        let msg =
+          err?.error_msg || "Interface request failed, please try again later";
+        if ([20002, 40022].includes(+err.error_code)) {
+          msg =
+            "The verification code cannot be sent repeatedly within 60 seconds";
+        }
+        messageApi.error(msg);
+      })
+      .finally(() => {
+        setShortLoading(false);
+      });
+  }
+
+  const [time, setTime] = useState(60);
+  const [isRunning, toggleIsRunning] = useBoolean(false);
+
+  useInterval(
+    () => {
+      setTime((prevTime: number) => {
+        if (prevTime <= 1) {
+          toggleIsRunning();
+          return 60;
+        }
+
+        return prevTime - 1;
+      });
+    },
+    isRunning ? 1000 : null
+  );
 
   const [googleLoading, toggleGoogleLoading] = useBoolean(false);
   /**谷歌登录 */
@@ -104,7 +171,7 @@ export default function LoginPage({ session, searchParams }: any) {
       domain: env == "prod" ? ".chatbond.co" : ".aecoapps.com",
     });
 
-    Cookies.set("allyFyGoogleRedirectUrl", redirectUrl, {
+    Cookies.set("allyFyGoogleRedirectUrl", "/center", {
       domain: env == "prod" ? ".chatbond.co" : ".aecoapps.com",
     });
 
@@ -139,13 +206,19 @@ export default function LoginPage({ session, searchParams }: any) {
     <>
       {contextHolder}
       <div className="w-full h-100vh !absolute left-0 top-0 bg-[#fff] pt-16">
-        <img
+        <Image
           className="w-35.7vw absolute top-0 right-0 z-2"
           src="/assets/img/login/login_bg1.svg"
+          alt="Chatbond loginBg1"
+          width={100}
+          height={100}
         />
-        <img
+        <Image
           className="w-19.58vw absolute bottom-0 left-0 z-2"
           src="/assets/img/login/login_bg2.png"
+          alt="Chatbond loginBg2"
+          width={100}
+          height={100}
         />
         <div
           className={`w-full h-full overflow-y-auto flex justify-center ${
@@ -158,7 +231,7 @@ export default function LoginPage({ session, searchParams }: any) {
                 scroll ? "" : "mt-2"
               }`}
             >
-              Welcome Back
+              Get started for free
             </h2>
             <Form
               className="w-full"
@@ -174,24 +247,51 @@ export default function LoginPage({ session, searchParams }: any) {
                 />
               </Form.Item>
               <Form.Item label="Password" name="password">
-                <Input.Password
-                  autoComplete=""
-                  placeholder="Password"
-                  className="!bg-[#F0F0F0] !rounded-2 w-full !px-5  !h-10 !leading-10 !text-[#040608] !text-4 !fw-500 !focus:shadow-none !b-2 !b-[#F0F0F0] !focus:b-[#040608]"
-                  onPressEnter={(e) => {
-                    e.preventDefault();
-                    form.submit();
-                  }}
-                />
+                <div>
+                  <Input.Password
+                    autoComplete=""
+                    placeholder="Password"
+                    className="!bg-[#F0F0F0] !rounded-2 w-full !px-5  !h-10 !leading-10 !text-[#040608] !text-4 !fw-500 !focus:shadow-none !b-2 !b-[#F0F0F0] !focus:b-[#040608]"
+                  />
+                  {passwordError && (
+                    <div className="w-full text-[#040608] text-4.5 fw-300 flex flex-items-center">
+                      <Image
+                        className="w-4.5 h-4.5 mr-1"
+                        src="/assets/img/login/login_error.png"
+                        alt=""
+                        width={100}
+                        height={100}
+                      />
+                      Password between 6 to 20 characters
+                    </div>
+                  )}
+                </div>
               </Form.Item>
 
-              <Form.Item>
-                <Link
-                  href="/resetPassword"
-                  className="w-full block !text-[#040608] !text-4 !fw-500 text-right cursor-pointer"
-                >
-                  Forgot password?
-                </Link>
+              <Form.Item label="Code" name="short">
+                <div>
+                  <Input
+                    autoComplete=""
+                    maxLength={6}
+                    placeholder="Code"
+                    className="!bg-[#F0F0F0] code !rounded-2 w-full !px-5 !pr-30 !h-10 !leading-10 !text-[#040608] !text-4 !fw-500 !focus:shadow-none !b-2 !b-[#F0F0F0] !focus:b-[#040608]"
+                    onPressEnter={(e) => {
+                      e.preventDefault();
+                      form.submit();
+                    }}
+                  ></Input>
+                  <Button
+                    className={`!absolute !right-2.5 !top-1/2 transform -translate-y-1/2  !h-8 !w-25  ${
+                      isRunning || shortLoading
+                        ? "!bg-[#CDCDCE]"
+                        : "!bg-[#040608]"
+                    } !text-white !text-3.5 !fw-400  !b-none   !rounded-1`}
+                    disabled={isRunning || shortLoading}
+                    onClick={getShortFn}
+                  >
+                    {isRunning ? `${time}s` : "Get code"}
+                  </Button>
+                </div>
               </Form.Item>
 
               <Form.Item>
@@ -201,27 +301,27 @@ export default function LoginPage({ session, searchParams }: any) {
                       "linear-gradient(90deg, #83e10a 0%, #0ac655 100%)",
                   }}
                   htmlType="submit"
-                  loading={loginLoading}
+                  loading={signUpLoading}
                   className="w-full !h-10 !text-4 !text-white !fw-700 !rounded-2 text-center !b-0"
                 >
-                  Sign in
+                  Sign up
                 </Button>
               </Form.Item>
             </Form>
             <div className="w-full h-12 mb-1 text-[#040608] text-4 fw-300 flex flex-justify-center">
-              Don't have an account?
+              Already have an account?
               <Link
-                href="/signUp"
-                className="fw-700 ml-5 cursor-pointer mt--0.25"
+                className="fw-700 ml-5 cursor-pointer"
+                href="/login"
                 onClick={() => {
                   sendTA("XWEB_CLICK", {
-                    name: "login",
-                    style: "sign_up",
+                    name: "register",
+                    style: "sign_in",
                     container: Cookies.get("userId"),
                   });
                 }}
               >
-                Sign up
+                Sign in
               </Link>
             </div>
 

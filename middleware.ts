@@ -21,6 +21,5 @@ export const config = {
     "/account/:path*",
     "/create/:path*",
     "/bot/:path*",
-    "/help",
   ],
 };

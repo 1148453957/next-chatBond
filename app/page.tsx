@@ -1,11 +1,12 @@
 "use client";
-import './home.scss';
+import "./home.scss";
 
 import { sendTA } from "@/lib/js/TA";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import animationData from "./lottie.json";
 import Lottie from "lottie-react";
+import Image from "next/image";
 
 export default function Home() {
   const sendTAFn = (style: string) => {
@@ -36,10 +37,12 @@ export default function Home() {
   return (
     <>
       <div className="mx-auto text-#040608 font-[Inter] relative">
-        <img
+        <Image
           className="w-35.7vw absolute top-0 right-0"
           src="/assets/img/login/login_bg1.svg"
           alt="Chatbond logo"
+          width={100}
+          height={100}
         />
         <section
           className="py-10 md:py-20 md:px-14vw px-6 text-center "
@@ -63,16 +66,17 @@ export default function Home() {
               className="w-328px h-16 mt-10 text-center mx-auto"
               onClick={() => sendTAFn("try for free")}
             >
-                 <Lottie animationData={animationData} />
- 
+              <Lottie animationData={animationData} />
             </div>
           </Link>
           <div className="tip text-12px font-400 mx-auto fcc mt-4 font-[Inter] text-#818283">
             <span className="mr-4 flex">
-              <img
+              <Image
                 className="w-8px mr-1"
                 src="/assets/img/home/icon_right.png"
                 alt="chatbot"
+                width={100}
+                height={100}
               />
               <span>No credit card required</span>
             </span>
@@ -175,14 +179,12 @@ export default function Home() {
                 of our ecommerce revenue is made thanks to Chatbond.”
               </span>
               <div className="flex flex-col items-start gap-2 md:flex-row md:items-center">
-                <img
-                  loading="lazy"
-                  width="40"
-                  height="40"
-                  decoding="async"
-                  data-nimg="1"
+                <Image
+                  width={40}
+                  height={40}
                   className="rounded-full text-transparent"
                   src="/assets/img/businesses/Bartosz.png"
+                  alt="Bartosz Kaczmarczyk"
                 />
                 <div className="flex flex-col gap-1">
                   <div className="flex flex-col items-start gap-2 text-sm text-zinc-900 md:flex-row md:items-center md:gap-1">
@@ -203,18 +205,26 @@ export default function Home() {
           </p>
           <div className="flex gap-10 md:gap-50 flex-row">
             <div className="text-center text-8 mt-10 fcc flex-col">
-              <div className="w-25 h-25 md:w-50 md:h-50">
-                <img src="/assets/img/BUSINESSES.svg" alt="" />
-              </div>
+              <Image
+                width={100}
+                height={100}
+                className="w-25 h-25 md:w-50 md:h-50"
+                src="/assets/img/BUSINESSES.svg"
+                alt=""
+              />
               <h4 className="fw-bold mt-10 fcc flex-col text-5 md:text-7">
                 <span>6000+</span> <span>businesses</span>
               </h4>
             </div>
 
             <div className="text-center text-8 mt-10 fcc flex-col">
-              <div className="w-25 h-25 md:w-50 md:h-50">
-                <img src="/assets/img/countrys.svg" alt="" />
-              </div>
+              <Image
+                width={100}
+                height={100}
+                className="w-25 h-25 md:w-50 md:h-50"
+                src="/assets/img/countrys.svg"
+                alt=""
+              />
               <h4 className="fw-bold mt-10 fcc flex-col text-5 md:text-7">
                 <span>150</span> <span>countries/regions</span>
               </h4>
@@ -223,24 +233,32 @@ export default function Home() {
           <p className="text-12 fw-700 text-center mt-10">Trusted by</p>
 
           <div className="w-full flex justify-evenly overflow-hidden mt-10">
-            <img
+            <Image
+              width={100}
+              height={100}
+              className="w-[140px]"
               src="/assets/img/businesses/praktiker.svg"
-              className="w-[140px]"
               alt=""
-            />
-            <img
+            />{" "}
+            <Image
+              width={100}
+              height={100}
+              className="w-[140px]"
               src="/assets/img/businesses/utear.png"
-              className="w-[140px]"
               alt=""
-            />
-            <img
-              src="/assets/img/businesses/paypal.png"
+            />{" "}
+            <Image
+              width={100}
+              height={100}
               className="hidden md:block w-[140px]"
+              src="/assets/img/businesses/paypal.png"
               alt=""
-            />
-            <img
-              src="/assets/img/businesses/glovo.svg"
+            />{" "}
+            <Image
+              width={100}
+              height={100}
               className="hidden md:block w-[140px] mt--4"
+              src="/assets/img/businesses/glovo.svg"
               alt=""
             />
           </div>
@@ -383,8 +401,7 @@ export default function Home() {
               className="w-328px h-16 mt-10 text-center mx-auto mb-18"
               onClick={() => sendTAFn("try for free")}
             >
-                  <Lottie animationData={animationData} />
- 
+              <Lottie animationData={animationData} />
             </div>
           </Link>
         </section>

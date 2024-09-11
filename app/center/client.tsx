@@ -15,6 +15,7 @@ import {
 } from "@ant-design/icons";
 import { useErrorStore } from "@/app/store/useErrorStore";
 import { useShallow } from "zustand/react/shallow";
+import Image from "next/image";
 export default function clientPage({ session, searchParams }: any) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
@@ -52,9 +53,6 @@ export default function clientPage({ session, searchParams }: any) {
                 const session = await getSessionData();
 
                 Cookies.set("userId", session?.user?.userId as any, {
-                  domain: env == "prod" ? ".chatbond.co" : ".aecoapps.com",
-                });
-                Cookies.set("isLogined", "1", {
                   domain: env == "prod" ? ".chatbond.co" : ".aecoapps.com",
                 });
                 await getData();
@@ -109,8 +107,20 @@ export default function clientPage({ session, searchParams }: any) {
   useEffect(() => {
     initFn();
   }, []);
-  function handleAdd() {}
-  function handleLink(botId: any) {}
+  function handleAdd() {
+    sendTA('XWEB_CLICK', {
+      name: 'Chatbots_page',
+      style: 'New Chatbot',
+      container: Cookies.get('userId'),
+    })
+    router.push('/create')
+  }
+  function handleLink(botId: any) {  sendTA('XWEB_CLICK', {
+    name: 'Chatbots_page',
+    style: 'Chatbot',
+    container: Cookies.get('userId'),
+  })
+  router.push(`/bot/Chatbot?id=${id}`)}
   function handleClick(botId: any) {}
   return (
     <>
@@ -130,7 +140,7 @@ export default function clientPage({ session, searchParams }: any) {
               >
                 Chatbots
               </h1>
-              {botList.length && canCreate && (
+              {botList.length && canCreate ? (
                 <div className="absolute right-0 top-0 md:top--3">
                   <Button
                     onClick={handleAdd}
@@ -147,7 +157,7 @@ export default function clientPage({ session, searchParams }: any) {
                     />
                   </Button>
                 </div>
-              )}
+              ):null}
             </div>
             <div className="animate-ease-in border-1 border-#E6E6E6 p-6 text-center rounded-3">
               {botList.length ? (
@@ -163,18 +173,23 @@ export default function clientPage({ session, searchParams }: any) {
                         className="flex cursor-pointer"
                         onClick={() => handleLink(item.botId)}
                       >
-                        <div className="w-full h-full">
+                        <div className="w-full h-full relative">
                           {item.avatar ? (
-                            <img
+                            <Image
                               className="w-full object-cover bg-#E6E6E6"
                               src={item.avatar}
+                              alt="Chatbond avatar"
+                              width={100}
+                              height={100}
                             />
                           ) : (
-                            <div className="w-full h-full fcc min-h-130px bg-#E6E6E6">
-                              <img
+                            <div className="w-full h-full fcc min-h-130px bg-#E6E6E6 relative">
+                              <Image
                                 className="w-full max-w-25 object-cover"
                                 src="/assets/img/default_bg.png"
                                 alt="Chatbond defaultBg"
+                                width={100}
+                                height={100}
                               />
                             </div>
                           )}

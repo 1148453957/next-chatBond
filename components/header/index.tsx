@@ -10,6 +10,41 @@ import { sendTA } from "@/lib/js/TA";
 const Client = ({ session }: any) => {
   const isLoggedIn = session?.user?.userId;
   const pathname = usePathname();
+let loginVisible = true,accountVisible = false;
+
+if (isLoggedIn) {
+  // 已登录
+  loginVisible = false;
+  accountVisible = true;
+}else{
+
+if (pathname.includes("/login")) {
+  // 在登录界面，右上角图标不显示
+  loginVisible = false;
+  accountVisible = false;
+}else if (pathname.includes("/center")){
+  // 在中心界面，右上角图标默认显示登录
+  loginVisible = false;
+  accountVisible = true;
+}else{
+  loginVisible = true;
+  accountVisible = false;
+}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
   const sendTAFn = (style: string) => {
     sendTA("XWEB_CLICK", {
       name: "home_page",
@@ -137,7 +172,7 @@ const Client = ({ session }: any) => {
           </div>
 
           <div className="hidden md:flex items-center w-50">
-            {isLoggedIn && (
+            {accountVisible && (
               <>
                 <Link href="/help">
                   <span className="mr-4">Help</span>
@@ -152,13 +187,12 @@ const Client = ({ session }: any) => {
                 </Link>
               </>
             )}
-            {/*没登录，并且在登录界面，不显示右上角的登录  */}
-            {!isLoggedIn && !pathname.includes("/login") && (
+            {loginVisible&& (
               <>
                 <Link href="/login">
                   <span className="mr-4">Log in</span>
                 </Link>
-                <Link href="/login?isRegister=1">
+                <Link href="/signUp">
                   <Button
                     className="!fw-500 !w-124px !h-10 !border-#040608"
                     onClick={() => sendTAFn("sign up free")}
@@ -203,7 +237,7 @@ const Client = ({ session }: any) => {
                 className="flex flex-col gap-4 !text-[#000]"
                 onClick={() => setMenuVisible(false)}
               >
-                {isLoggedIn && (
+                {accountVisible && (
                   <>
                     <Link href="/help">
                       <span className="text-base !text-[#000]">Help</span>
@@ -219,12 +253,12 @@ const Client = ({ session }: any) => {
                   </>
                 )}
 
-                {!isLoggedIn && !pathname.includes("/login") && (
+                {loginVisible && (
                   <>
                     <Link href="/login">
                       <span className="text-base !text-[#000]">Log in</span>
                     </Link>
-                    <Link href="/login?isRegister=1">
+                    <Link href="/signUp">
                       <Button
                         className="!fw-500 !w-124px !h-10 !border-#040608 !text-#000"
                         onClick={() => sendTAFn("try for free")}
