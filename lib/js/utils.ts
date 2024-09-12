@@ -1,5 +1,4 @@
 import md5 from "md5";
-import dayjs from "dayjs";
 
 export const uuid = () =>
   Number(Math.random().toString().substring(2) + Date.now()).toString(36);
@@ -13,11 +12,9 @@ export const uuid2 = (len = 10) => {
 
 const generateRandomAlphaNum = (len: number) => {
   let rdmString = "";
-  for (
-    ;
-    rdmString.length < len;
-    rdmString += Math.random().toString(36).substring(2)
-  );
+  while (rdmString.length < len) {
+    rdmString += Math.random().toString(36).substring(2);
+  }
   return rdmString.substring(0, len);
 };
 
