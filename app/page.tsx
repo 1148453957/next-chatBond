@@ -239,21 +239,21 @@ export default function Home() {
               className="w-[140px]"
               src="/assets/img/businesses/praktiker.svg"
               alt=""
-            />{" "}
+            />
             <Image
               width={100}
               height={100}
               className="w-[140px]"
               src="/assets/img/businesses/utear.png"
               alt=""
-            />{" "}
+            />
             <Image
               width={100}
               height={100}
               className="hidden md:block w-[140px]"
               src="/assets/img/businesses/paypal.png"
               alt=""
-            />{" "}
+            />
             <Image
               width={100}
               height={100}

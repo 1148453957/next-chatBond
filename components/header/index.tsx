@@ -10,40 +10,27 @@ import { sendTA } from "@/lib/js/TA";
 const Client = ({ session }: any) => {
   const isLoggedIn = session?.user?.userId;
   const pathname = usePathname();
-let loginVisible = true,accountVisible = false;
+  let loginVisible = true,
+    accountVisible = false;
 
-if (isLoggedIn) {
-  // 已登录
-  loginVisible = false;
-  accountVisible = true;
-}else{
-
-if (pathname.includes("/login")) {
-  // 在登录界面，右上角图标不显示
-  loginVisible = false;
-  accountVisible = false;
-}else if (pathname.includes("/center")){
-  // 在中心界面，右上角图标默认显示登录
-  loginVisible = false;
-  accountVisible = true;
-}else{
-  loginVisible = true;
-  accountVisible = false;
-}
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
+  if (isLoggedIn) {
+    // 已登录
+    loginVisible = false;
+    accountVisible = true;
+  } else {
+    if (pathname.includes("/login")) {
+      // 在登录界面，右上角图标不显示
+      loginVisible = false;
+      accountVisible = false;
+    } else if (pathname.includes("/center")) {
+      // 在中心界面，右上角图标默认显示登录
+      loginVisible = false;
+      accountVisible = true;
+    } else {
+      loginVisible = true;
+      accountVisible = false;
+    }
+  }
 
   const sendTAFn = (style: string) => {
     sendTA("XWEB_CLICK", {
@@ -66,111 +53,112 @@ if (pathname.includes("/login")) {
               className="h-4 ml-0"
             />
           </Link>
-          <div className="flex gap-12" v-if="route?.path !== '/login'">
-            <div className="text-center text-white/50  hidden md:flex items-center m-auto gap-4">
-              <Link href="/exchange" className="text-#000">
-                Exchange
-              </Link>
-              <Link href="/pricing" className="text-#000">
-                Pricing
-              </Link>
-              <Dropdown
-                dropdownRender={() => (
-                  <div className="flex flex-col bg-white w-300px b-1 p-2 rd-2 shadow-lg">
-                    <Link href="/changelog" className="!text-#000 fcc">
-                      <div className="w-full flex items-start gap-2 p-2 hover-bg-#f4f4f5">
-                        <div className="rounded-md border border-zinc-300 bg-white p-2 transition-colors duration-300 ease-in-out group-hover/item:border-zinc-500">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="current"
-                            className="h-6 w-6 text-zinc-600 transition-transform duration-500 ease-in-out group-hover/item:rotate-3 group-hover/item:scale-125 group-hover/item:text-zinc-900"
-                          >
-                            <path
+          {!pathname.startsWith("/login") && (
+            <div className="flex gap-12">
+              <div className="text-center text-white/50  hidden md:flex items-center m-auto gap-4">
+                <Link href="/exchange" className="text-#000">
+                  Exchange
+                </Link>
+                <Link href="/pricing" className="text-#000">
+                  Pricing
+                </Link>
+                <Dropdown
+                  dropdownRender={() => (
+                    <div className="flex flex-col bg-white w-300px b-1 p-2 rd-2 shadow-lg">
+                      <Link href="/changelog" className="!text-#000 fcc">
+                        <div className="w-full flex items-start gap-2 p-2 hover-bg-#f4f4f5">
+                          <div className="rounded-md border border-zinc-300 bg-white p-2 transition-colors duration-300 ease-in-out group-hover/item:border-zinc-500">
+                            <svg
                               xmlns="http://www.w3.org/2000/svg"
-                              d="M12.5 8v3.8l1.85 1.85a.5.5 0 0 1-.7.7l-2-2a.5.5 0 0 1-.15-.35V8a.5.5 0 0 1 1 0Zm-.47-5.5A9.43 9.43 0 0 0 4.5 6.26V3a.5.5 0 0 0-1 0v4c0 .28.22.5.5.5h4a.5.5 0 0 0 0-1H5.57c1.6-1.9 3.95-3 6.46-3a8.5 8.5 0 0 1 0 17 8.38 8.38 0 0 1-7.58-4.72.5.5 0 1 0-.9.44 9.38 9.38 0 0 0 8.48 5.28 9.5 9.5 0 0 0 0-19Z"
-                              fill="currentColor"
-                            ></path>
-                          </svg>
+                              viewBox="0 0 24 24"
+                              fill="current"
+                              className="h-6 w-6 text-zinc-600 transition-transform duration-500 ease-in-out group-hover/item:rotate-3 group-hover/item:scale-125 group-hover/item:text-zinc-900"
+                            >
+                              <path
+                                xmlns="http://www.w3.org/2000/svg"
+                                d="M12.5 8v3.8l1.85 1.85a.5.5 0 0 1-.7.7l-2-2a.5.5 0 0 1-.15-.35V8a.5.5 0 0 1 1 0Zm-.47-5.5A9.43 9.43 0 0 0 4.5 6.26V3a.5.5 0 0 0-1 0v4c0 .28.22.5.5.5h4a.5.5 0 0 0 0-1H5.57c1.6-1.9 3.95-3 6.46-3a8.5 8.5 0 0 1 0 17 8.38 8.38 0 0 1-7.58-4.72.5.5 0 1 0-.9.44 9.38 9.38 0 0 0 8.48 5.28 9.5 9.5 0 0 0 0-19Z"
+                                fill="currentColor"
+                              ></path>
+                            </svg>
+                          </div>
+                          <div className="w-full flex flex-col">
+                            <span className="text-4 font-semibold leading-6 text-gray-700">
+                              Changelog
+                            </span>
+                            <span className="text-3.5 leading-5 text-zinc-500">
+                              Stay up to date with the latest updates and
+                              features.
+                            </span>
+                          </div>
                         </div>
-                        <div className="w-full flex flex-col">
-                          <span className="text-4 font-semibold leading-6 text-gray-700">
-                            Changelog
-                          </span>
-                          <span className="text-3.5 leading-5 text-zinc-500">
-                            Stay up to date with the latest updates and
-                            features.
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                    <Link href="/blog" className="!text-#000 fcc">
-                      <div className="w-full flex items-start gap-2 p-2 hover-bg-#f4f4f5">
-                        <div className="rounded-md border border-zinc-300 bg-white p-2 transition-colors duration-300 ease-in-out group-hover/item:border-zinc-500">
-                          <span className="sr-only">Blog</span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="8 8 23 23"
-                            fill="none"
-                            className="h-6 w-6 text-zinc-600 transition-transform duration-500 ease-in-out group-hover/item:rotate-3 group-hover/item:scale-125 group-hover/item:text-zinc-900"
-                          >
-                            <g>
+                      </Link>
+                      <Link href="/blog" className="!text-#000 fcc">
+                        <div className="w-full flex items-start gap-2 p-2 hover-bg-#f4f4f5">
+                          <div className="rounded-md border border-zinc-300 bg-white p-2 transition-colors duration-300 ease-in-out group-hover/item:border-zinc-500">
+                            <span className="sr-only">Blog</span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="8 8 23 23"
+                              fill="none"
+                              className="h-6 w-6 text-zinc-600 transition-transform duration-500 ease-in-out group-hover/item:rotate-3 group-hover/item:scale-125 group-hover/item:text-zinc-900"
+                            >
                               <g>
-                                <line
-                                  className="stroke-current stroke-[0.6]"
-                                  x1="8.81"
-                                  y1="26.07"
-                                  x2="31.19"
-                                  y2="26.07"
-                                ></line>
-                                <line
-                                  className="stroke-current stroke-[0.6]"
-                                  x1="8.81"
-                                  y1="26.66"
-                                  x2="31.19"
-                                  y2="26.66"
-                                ></line>
                                 <g>
-                                  <path
+                                  <line
                                     className="stroke-current stroke-[0.6]"
-                                    d="M12.77,25.38l-1.26-0.76c-0.28-0.17-0.37-0.54-0.2-0.82l5.35-8.86c0.11-0.19,0.36-0.25,0.55-0.14l1.6,0.96 c0.19,0.11,0.25,0.36,0.14,0.55l-5.35,8.86C13.42,25.46,13.05,25.55,12.77,25.38z"
-                                  ></path>
-                                  <path
+                                    x1="8.81"
+                                    y1="26.07"
+                                    x2="31.19"
+                                    y2="26.07"
+                                  ></line>
+                                  <line
                                     className="stroke-current stroke-[0.6]"
-                                    d="M21.84,25.47h-1.87c-0.21,0-0.39-0.17-0.39-0.39v-9.73c0-0.21,0.17-0.39,0.39-0.39h1.89 c0.21,0,0.39,0.17,0.39,0.39v9.71C22.25,25.29,22.07,25.47,21.84,25.47z"
-                                  ></path>
-                                  <path
-                                    className="stroke-current stroke-[0.6]"
-                                    d="M24.99,25.47h-1.7c-0.25,0-0.45-0.2-0.45-0.45v-8.19c0-0.2,0.16-0.36,0.36-0.36h1.95 c0.2,0,0.36,0.16,0.36,0.36v8.12C25.51,25.24,25.28,25.47,24.99,25.47z"
-                                  ></path>
-                                  <path
-                                    className="stroke-current stroke-[0.6]"
-                                    d="M28.36,25.47h-1.77c-0.27,0-0.49-0.22-0.49-0.49V13.76c0-0.23,0.19-0.41,0.41-0.41h1.84 c0.23,0,0.41,0.19,0.41,0.41v11.31C28.76,25.29,28.58,25.47,28.36,25.47z"
-                                  ></path>
+                                    x1="8.81"
+                                    y1="26.66"
+                                    x2="31.19"
+                                    y2="26.66"
+                                  ></line>
+                                  <g>
+                                    <path
+                                      className="stroke-current stroke-[0.6]"
+                                      d="M12.77,25.38l-1.26-0.76c-0.28-0.17-0.37-0.54-0.2-0.82l5.35-8.86c0.11-0.19,0.36-0.25,0.55-0.14l1.6,0.96 c0.19,0.11,0.25,0.36,0.14,0.55l-5.35,8.86C13.42,25.46,13.05,25.55,12.77,25.38z"
+                                    ></path>
+                                    <path
+                                      className="stroke-current stroke-[0.6]"
+                                      d="M21.84,25.47h-1.87c-0.21,0-0.39-0.17-0.39-0.39v-9.73c0-0.21,0.17-0.39,0.39-0.39h1.89 c0.21,0,0.39,0.17,0.39,0.39v9.71C22.25,25.29,22.07,25.47,21.84,25.47z"
+                                    ></path>
+                                    <path
+                                      className="stroke-current stroke-[0.6]"
+                                      d="M24.99,25.47h-1.7c-0.25,0-0.45-0.2-0.45-0.45v-8.19c0-0.2,0.16-0.36,0.36-0.36h1.95 c0.2,0,0.36,0.16,0.36,0.36v8.12C25.51,25.24,25.28,25.47,24.99,25.47z"
+                                    ></path>
+                                    <path
+                                      className="stroke-current stroke-[0.6]"
+                                      d="M28.36,25.47h-1.77c-0.27,0-0.49-0.22-0.49-0.49V13.76c0-0.23,0.19-0.41,0.41-0.41h1.84 c0.23,0,0.41,0.19,0.41,0.41v11.31C28.76,25.29,28.58,25.47,28.36,25.47z"
+                                    ></path>
+                                  </g>
                                 </g>
                               </g>
-                            </g>
-                          </svg>
+                            </svg>
+                          </div>
+                          <div className="w-full flex flex-col">
+                            <span className="text-4 font-semibold leading-6 text-gray-700">
+                              Blog
+                            </span>
+                            <span className="text-3.5 leading-5 text-zinc-500">
+                              Learn more about chatbond by reading our latest
+                              articles.
+                            </span>
+                          </div>
                         </div>
-                        <div className="w-full flex flex-col">
-                          <span className="text-4 font-semibold leading-6 text-gray-700">
-                            Blog
-                          </span>
-                          <span className="text-3.5 leading-5 text-zinc-500">
-                            Learn more about chatbond by reading our latest
-                            articles.
-                          </span>
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                )}
-              >
-                <span className="text-#000 cursor-pointer">Resource</span>
-              </Dropdown>
+                      </Link>
+                    </div>
+                  )}
+                >
+                  <span className="text-#000 cursor-pointer">Resource</span>
+                </Dropdown>
+              </div>
             </div>
-          </div>
-
+          )}
           <div className="hidden md:flex items-center w-50">
             {accountVisible && (
               <>
@@ -187,7 +175,7 @@ if (pathname.includes("/login")) {
                 </Link>
               </>
             )}
-            {loginVisible&& (
+            {loginVisible && (
               <>
                 <Link href="/login">
                   <span className="mr-4">Log in</span>
